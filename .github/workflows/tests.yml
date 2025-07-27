@@ -1,0 +1,38 @@
+name: Automation Specialist Task CICD
+
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  postman-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman Tests
+        run: |
+          newman run Postman/Expense Tracker App.postman_collection.json \
+          -e Postman/Expense Tracker Env.postman_environment.json \
+          --reporters cli,html \
+          --reporter-html-export postman/newman-report.html
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: postman-report
+          path: postman/newman-report.html
