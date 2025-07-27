@@ -9,7 +9,7 @@ This repository contains Postman collections and environment files to test the E
 - Make sure to install Postman
 
 ### Download the Postman Collection and environment file
-- get the Expense-Tracker-App.postman_collection.json and Expense-Tracker-Env.postman_environment.json from the above **Postman** folder.
+- get the **Expense-Tracker-App.postman_collection.json** and **Expense-Tracker-Env.postman_environment.json** from the above **Postman** folder.
 
 ### Import The collection and environment file 
 - import the env and collection 
