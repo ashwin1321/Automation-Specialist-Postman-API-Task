@@ -1,0 +1,1017 @@
+{
+	"info": {
+		"_postman_id": "ffc1ed4a-6a61-4be6-82b8-8b8034a8435c",
+		"name": "Expense Tracker App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47102770"
+	},
+	"item": [
+		{
+			"name": "Register User (negative case: if already exists -must throw status code 409)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"if(pm.response.code === 201){",
+							"    console.log('user registered successfully')",
+							"}",
+							"else{",
+							"    console.log('user already exists')",
+							"     pm.test(\"User Registration Failed -- user already exists \", function () {",
+							"        pm.expect(response.userExists).to.eql(\"user already exists\");",
+							"        })",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"testuseswdr\",\n  \"email\": \"test@etswststes.com\",\n  \"password\": \"password2235g\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/users/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register User (Positive Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// now we will save userId, as it is used in validation in other apis",
+							"",
+							"var response = pm.response.json()",
+							"",
+							"if (pm.response.code === 201) {",
+							"  ",
+							"    if (response.newUser && response.newUser._id) {",
+							"        pm.environment.set(\"userId\", response.newUser._id);",
+							"        console.log(\"User ID saved from registration:\", response.newUser._id);",
+							"",
+							"        pm.test(\"User registered successfully\", function () {",
+							"        pm.expect(response.success).to.eql(true);",
+							"        })",
+							"    }",
+							"",
+							"    ",
+							"} else {",
+							"    console.log(\"Registration failed or user already exists.\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// since we cannot register same user multiple times, and running this collection with same will not proceed anywhere. I will be adding a script to generata a new random user everytime",
+							"",
+							"let num = Math.floor(Math.random() * 100000);",
+							"let randomEmail = `testuser_${num}@expense.com`;",
+							"",
+							"pm.environment.set(\"email\", randomEmail);",
+							"",
+							"pm.environment.set(\"name\", `expenseUsaer${num}`);",
+							"",
+							"pm.environment.set(\"password\", \"Passworsfa123\")",
+							"",
+							"console.log(\"Generated Email:\", randomEmail);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"{{name}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/users/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login (Invalid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.text();",
+							"",
+							"if (pm.response.code === 201) {",
+							"    console.log('user registered successfully')",
+							"}",
+							"else {",
+							"    console.log('user doesnt exists')",
+							"    pm.test(\"User Login Failed -- user doesn't exists \", function () {",
+							"        pm.expect(response).to.eql(\"User doesnt't exists\");",
+							"    })",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"test@etsststeasfasfgas.com\",\n  \"password\": \"{{password}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/users/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login (Valid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json()",
+							"",
+							"if (pm.response.code === 200) {",
+							"  ",
+							"        pm.test(\"User logged in successfully\", function () {",
+							"        pm.expect(response.success).to.eql(true);",
+							"        })",
+							"} else {",
+							"    console.log(\"log in failed or user doesnt exists.\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"{{name}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/users/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a expense  (valid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json()",
+							"",
+							"if (pm.response.code === 201) {",
+							"    ",
+							"    pm.test(\"Expense created successfully\", function () {",
+							"        pm.expect(response).to.have.property(\"_id\"); ",
+							"    });",
+							"    if (response._id) {",
+							"        pm.environment.set(\"transactionIdexpense\", response._id);",
+							"        console.log(\" Saved transaction id:\", response._id);",
+							"    } else {",
+							"        console.log(\"no transaction id\");",
+							"    }",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userid\": \"{{userId}}\",\n  \"amount\": 300,\n  \"type\": \"expense\",\n  \"category\": \"Food\",\n  \"reference\": \"Paid\",\n  \"description\": \"Lunch with friends\",\n  \"date\": \"2025-07-27\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/add-transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"add-transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a expense  (Invalid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json()",
+							"",
+							"if (pm.response.code === 404) {",
+							"  ",
+							"        pm.test(\"Invalid expense creation\", function () {",
+							"        pm.expect(response.message).to.eql(\"User not found\");",
+							"        })",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userid\": \"64a9e5f93ab6c12345abcd67\",\n  \"amount\": 300,\n  \"type\": \"expense\",\n  \"category\": \"Food\",\n  \"reference\": \"Paid\",\n  \"description\": \"Lunch with friends\",\n  \"date\": \"2025-07-27\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/add-transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"add-transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a income data  (valid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json()",
+							"",
+							"if (pm.response.code === 201) {",
+							"    ",
+							"    pm.test(\"Income data created successfully\", function () {",
+							"        pm.expect(response).to.have.property(\"_id\"); ",
+							"    });",
+							"    if (response._id) {",
+							"        pm.environment.set(\"transactionIdIncome\", response._id);",
+							"        console.log(\" Saved transaction id:\", response._id);",
+							"    } else {",
+							"        console.log(\"no transaction id\");",
+							"    }",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userid\": \"{{userId}}\",\n  \"amount\": 5000,\n  \"type\": \"income\",\n  \"category\": \"salary\",\n  \"reference\": \"received\",\n  \"description\": \"freelancing\",\n  \"date\": \"2025-07-27\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/add-transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"add-transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a income data  (Invalid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json()",
+							"",
+							"if (pm.response.code === 404) {",
+							"  ",
+							"        pm.test(\"Invalid expense creation\", function () {",
+							"        pm.expect(response.message).to.eql(\"User not found\");",
+							"        })",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userid\": \"64a9e5f93ab6c12345abcd67\",\n  \"amount\": 5000,\n  \"type\": \"income\",\n  \"category\": \"salary\",\n  \"reference\": \"received\",\n  \"description\": \"freelancing\",\n  \"date\": \"2025-07-27\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/add-transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"add-transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get expense data for a user  (Valid case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseCode = pm.response.code;",
+							"",
+							"pm.test(\"Get all the transactions\", function () {",
+							"    pm.expect(responseCode).to.eql(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/get-transaction?userid={{userId}}&frequency=7&startDate=2025-07-01&endDate=2025-07-25&type=all",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"get-transaction"
+					],
+					"query": [
+						{
+							"key": "userid",
+							"value": "{{userId}}"
+						},
+						{
+							"key": "frequency",
+							"value": "7"
+						},
+						{
+							"key": "startDate",
+							"value": "2025-07-01"
+						},
+						{
+							"key": "endDate",
+							"value": "2025-07-25"
+						},
+						{
+							"key": "type",
+							"value": "all"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get expense data for a user  (Invalid case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json()",
+							"",
+							"if (pm.response.code === 404) {",
+							"  ",
+							"        pm.test(\"ERROR: Invalid user -- no response\", function () {",
+							"        pm.expect(response.message).to.eql(\"User not found\");",
+							"        })",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/get-transaction?userid=68861aae1dd57c09961b0644&frequency=7&startDate=2025-07-01&endDate=2025-07-25&type=all",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"get-transaction"
+					],
+					"query": [
+						{
+							"key": "userid",
+							"value": "68861aae1dd57c09961b0644"
+						},
+						{
+							"key": "frequency",
+							"value": "7"
+						},
+						{
+							"key": "startDate",
+							"value": "2025-07-01"
+						},
+						{
+							"key": "endDate",
+							"value": "2025-07-25"
+						},
+						{
+							"key": "type",
+							"value": "all"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a income data  (Valid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.text()",
+							"",
+							"if (pm.response.code === 200) {",
+							"  ",
+							"        pm.test(\"update income data\", function () {",
+							"        pm.expect(response).to.eql(\"transaction updated\");",
+							"        })",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\": \"{{transactionIdIncome}}\",\n    \"payload\": {\n  \"userid\": \"{{userId}}\",\n  \"amount\": 5000,\n  \"type\": \"income\",\n  \"category\": \"salary\",\n  \"reference\": \"received\",\n  \"description\": \"freelancing\",\n  \"date\": \"2025-07-27\"\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"update-transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a expense data  (Valid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.text()",
+							"",
+							"if (pm.response.code === 200) {",
+							"  ",
+							"        pm.test(\"update expense data\", function () {",
+							"        pm.expect(response).to.eql(\"transaction updated\");",
+							"        })",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\": \"{{transactionIdexpense}}\",\n    \"payload\": {\n  \"userid\": \"{{userId}}\",\n  \"amount\": 300,\n  \"type\": \"expense\",\n  \"category\": \"Food\",\n  \"reference\": \"Paid\",\n  \"description\": \"Lunch with friends\",\n  \"date\": \"2025-07-27\"\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"update-transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a income data  (Invalid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json()",
+							"",
+							"if (pm.response.code === 404) {",
+							"  ",
+							"        pm.test(\"update income data\", function () {",
+							"        pm.expect(response.message).to.eql(\"transaction not found\");",
+							"        })",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\": \"64a9e5f93ab6c12345abcd67\",\n    \"payload\": {\n  \"userid\": \"{{userId}}\",\n  \"amount\": 5000,\n  \"type\": \"income\",\n  \"category\": \"salary\",\n  \"reference\": \"received\",\n  \"description\": \"freelancing\",\n  \"date\": \"2025-07-27\"\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"update-transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a expense data  (Invalid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json()",
+							"",
+							"if (pm.response.code === 404) {",
+							"  ",
+							"        pm.test(\"update expense data\", function () {",
+							"        pm.expect(response.message).to.eql(\"transaction not found\");",
+							"        })",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"transactionId\": \"64a9e5f93ab6c12345abcd67\",\n    \"payload\": {\n  \"userid\": \"{{userId}}\",\n  \"amount\": 300,\n  \"type\": \"expense\",\n  \"category\": \"Food\",\n  \"reference\": \"Paid\",\n  \"description\": \"Lunch with friends\",\n  \"date\": \"2025-07-27\"\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"update-transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete a transaction  (valid Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.text()",
+							"",
+							"if (pm.response.code === 200) {",
+							"  ",
+							"        pm.test(\"delete a transaction\", function () {",
+							"        pm.expect(response).to.eql(\"transaction deleted\");",
+							"        })",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"transactionId\": \"{{transactionIdexpense}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/delete-transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"delete-transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete a transaction  (Invalid  Case)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json()",
+							"",
+							"if (pm.response.code === 404) {",
+							"  ",
+							"        pm.test(\"delete a transaction -- Invalid Case\", function () {",
+							"        pm.expect(response.message).to.eql(\"transaction not found\");",
+							"        })",
+							"} else {",
+							"    console.log(\"something went wrong\");",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"transactionId\": \"64a9e5f93ab6c12345abcd67\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/transactions/delete-transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"transactions",
+						"delete-transaction"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
