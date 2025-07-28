@@ -699,7 +699,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction",
+					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction/{{transactionIdIncome}}",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -707,7 +707,8 @@
 						"api",
 						"v1",
 						"transactions",
-						"update-transaction"
+						"update-transaction",
+						"{{transactionIdIncome}}"
 					]
 				}
 			},
@@ -759,7 +760,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction",
+					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction/{{transactionIdexpense}}",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -767,7 +768,8 @@
 						"api",
 						"v1",
 						"transactions",
-						"update-transaction"
+						"update-transaction",
+						"{{transactionIdexpense}}"
 					]
 				}
 			},
@@ -819,7 +821,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction",
+					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction/64a9e5f93ab6c12345abcd67",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -827,7 +829,8 @@
 						"api",
 						"v1",
 						"transactions",
-						"update-transaction"
+						"update-transaction",
+						"64a9e5f93ab6c12345abcd67"
 					]
 				}
 			},
@@ -879,7 +882,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction",
+					"raw": "{{baseUrl}}/api/v1/transactions/update-transaction/64a9e5f93ab6c12345abcd67",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -887,7 +890,8 @@
 						"api",
 						"v1",
 						"transactions",
-						"update-transaction"
+						"update-transaction",
+						"64a9e5f93ab6c12345abcd67"
 					]
 				}
 			},
@@ -929,17 +933,8 @@
 			"request": {
 				"method": "DELETE",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"transactionId\": \"{{transactionIdexpense}}\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/transactions/delete-transaction",
+					"raw": "{{baseUrl}}/api/v1/transactions/delete-transaction/{{transactionIdexpense}}",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -947,7 +942,8 @@
 						"api",
 						"v1",
 						"transactions",
-						"delete-transaction"
+						"delete-transaction",
+						"{{transactionIdexpense}}"
 					]
 				}
 			},
@@ -989,17 +985,8 @@
 			"request": {
 				"method": "DELETE",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"transactionId\": \"64a9e5f93ab6c12345abcd67\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/transactions/delete-transaction",
+					"raw": "{{baseUrl}}/api/v1/transactions/delete-transaction/64a9e5f93ab6c12345abcd67",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -1007,7 +994,8 @@
 						"api",
 						"v1",
 						"transactions",
-						"delete-transaction"
+						"delete-transaction",
+						"64a9e5f93ab6c12345abcd67"
 					]
 				}
 			},
